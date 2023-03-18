@@ -1,0 +1,26 @@
+{
+  "name": "capital-x",
+  "version": "1.0.0",
+  "description": "server-side framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mohammed-Galal/capital-x.git"
+  },
+  "keywords": [
+    "capital-x"
+  ],
+  "author": "Mohammed Galal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mohammed-Galal/capital-x/issues"
+  },
+  "homepage": "https://github.com/Mohammed-Galal/capital-x#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.21",
+    "webpack": "^5.76.2"
+  }
+}
