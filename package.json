@@ -19,7 +19,7 @@
     "url": "https://github.com/Mohammed-Galal/capital-x/issues"
   },
   "homepage": "https://github.com/Mohammed-Galal/capital-x#readme",
-  "devDependencies": {
+  "dependencies": {
     "nodemon": "^2.0.21",
     "webpack": "^5.76.2"
   }
