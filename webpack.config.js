@@ -1,5 +1,3 @@
-const nodemon = require("nodemon");
-
 const args = process.argv,
   envMode = args[2] === "development" ? 1 : 2,
   isDev = envMode === 1,
@@ -12,7 +10,7 @@ if (targetApp === undefined) {
   throw targetErr;
 }
 
-const { fork } = require("child_process"),
+const nodemon = require("nodemon"),
   path = require("path"),
   rootPath = process.cwd(),
   webpack = require("webpack");
@@ -30,18 +28,14 @@ config.entry = {
 config.output = {
   path: path.resolve(rootPath, targetApp),
   chunkFormat: "commonjs",
+  filename: isDev
+    ? "temp.js"
+    : ({ chunk }) =>
+        (chunk.name === "index" ? "index" : "modules/[name]") + ".js",
 };
-
-if (isDev) {
-  config.output.filename = "temp.js";
-} else {
-  config.output.filename = (pathData) =>
-    pathData.chunk.name === "index" ? "[name].js" : "modules/[name].js";
-}
 
 config.resolve = {
   alias: {
-    ace: path.resolve(rootPath, "package/index.js"),
     addons: path.resolve(rootPath, "addons"),
   },
 };
@@ -58,15 +52,9 @@ config.optimization = {
   },
 };
 
-const pendingKillers = [];
-
 try {
-  const compiler = webpack(config),
-    watchOptions = { ignored: /node_modules/ };
-
+  const compiler = webpack(config);
   compiler.run(watchCallback);
-  // if (isDev) compiler.watch(watchOptions, watchCallback);
-  // else compiler.run();
 } catch {
   console.log(config);
 }
@@ -76,12 +64,4 @@ function watchCallback() {
     nodemon(targetApp + "/temp.js", {
       ignore: ["node_modules/**", __dirname + __filename],
     });
-
-  // pendingKillers.forEach((fn) => fn());
-  // pendingKillers.length = 0;
-  // const modulePath = config.output.path + "\\" + targetApp + ".js",
-  //   res = fork(modulePath, {
-  //     killSignal: "SIGTERM",
-  //   });
-  // pendingKillers.push(() => res.kill("SIGTERM"));
 }

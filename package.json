@@ -1,24 +1,29 @@
 {
-  "name": "capital-x",
+  "name": "envase",
   "version": "1.0.0",
   "description": "server-side framework",
   "main": "index.js",
+  "bin": {
+    "envase": "./webpack.config.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "envase test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mohammed-Galal/capital-x.git"
+    "url": "git+https://github.com/Mohammed-Galal/Envase.git"
   },
   "keywords": [
-    "capital-x"
+    "envase",
+    "server-side",
+    "framework"
   ],
   "author": "Mohammed Galal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mohammed-Galal/capital-x/issues"
+    "url": "https://github.com/Mohammed-Galal/Envase/issues"
   },
-  "homepage": "https://github.com/Mohammed-Galal/capital-x#readme",
+  "homepage": "https://github.com/Mohammed-Galal/Envase#readme",
   "dependencies": {
     "nodemon": "^2.0.21",
     "webpack": "^5.76.2"
