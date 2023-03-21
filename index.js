@@ -9,13 +9,16 @@ const appDir = __dirname,
   reqProto = require("addons/request"),
   resProto = require("addons/response");
 
-CONTAINER.prototype.appDir = appDir;
+ContainerProto.appDir = appDir;
+reqProto.appDir = appDir;
+resProto.appDir = appDir;
 Object.assign(CONTAINER.prototype, ContainerProto);
 Object.assign(http.IncomingMessage.prototype, reqProto);
 Object.assign(http.ServerResponse.prototype, resProto);
 
 module.exports = APP;
-const methodsInitialized = {},
+const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
+  methodsInitialized = {},
   proto = APP.prototype,
   accessControlAllowMethods = [];
 
@@ -62,7 +65,7 @@ Object.defineProperty(proto, "methods", {
 // initMethods: get all methods initialized in the server folder and merge it with object above [methodsInitialized]
 function initMethod(method) {
   const M = method.toUpperCase().replace(extentionExp, emptyStr);
-  M !== "INDEX" && accessControlAllowMethods.push(M);
+  httpMethods.test(M) && accessControlAllowMethods.push(M);
   methodsInitialized[M] = __non_webpack_require__(serverPath + "/" + method);
   return M;
 }

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const args = process.argv,
   envMode = args[2] === "development" ? 1 : 2,
   isDev = envMode === 1,
