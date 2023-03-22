@@ -6,9 +6,6 @@
   "bin": {
     "envase": "./webpack.config.js"
   },
-  "scripts": {
-    "test": "envase test"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mohammed-Galal/Envase.git"
