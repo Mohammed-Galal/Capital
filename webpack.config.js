@@ -26,6 +26,7 @@ const config = {},
   targets = ["node", "web"];
 
 config.mode = modes[2];
+config.mode = modes[2];
 config.target = targets[0];
 config.entry = {
   index: path.resolve(rootPath, targetApp, "config.js"),
@@ -34,6 +35,8 @@ config.entry = {
 config.output = {
   path: path.resolve(rootPath, targetApp),
   chunkFormat: "commonjs",
+  filename: ({ chunk }) =>
+    (chunk.name === "index" ? "index" : "modules/[name]") + ".js",
   filename: ({ chunk }) =>
     (chunk.name === "index" ? "index" : "modules/[name]") + ".js",
 };
@@ -47,6 +50,7 @@ config.resolve = {
 config.optimization = {
   chunkIds: "named",
   splitChunks: {
+  splitChunks: {
     chunks: "all",
     cacheGroups: {
       module: {
@@ -58,6 +62,7 @@ config.optimization = {
 
 try {
   const compiler = webpack(config);
+  compiler.run();
   compiler.run();
 } catch {
   console.log(config);
