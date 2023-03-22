@@ -1,26 +1,26 @@
 {
-  "name": "envase",
+  "name": "outvie",
   "version": "1.0.0",
   "description": "server-side framework",
   "main": "index.js",
   "bin": {
-    "envase": "./webpack.config.js"
+    "outvie": "./webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mohammed-Galal/Envase.git"
+    "url": "git+https://github.com/Mohammed-Galal/outvie.git"
   },
   "keywords": [
-    "envase",
+    "outvie",
     "server-side",
     "framework"
   ],
   "author": "Mohammed Galal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mohammed-Galal/Envase/issues"
+    "url": "https://github.com/Mohammed-Galal/outvie/issues"
   },
-  "homepage": "https://github.com/Mohammed-Galal/Envase#readme",
+  "homepage": "https://github.com/Mohammed-Galal/outvie#readme",
   "dependencies": {
     "nodemon": "^2.0.21",
     "webpack": "^5.76.2"
