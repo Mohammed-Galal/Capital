@@ -15,12 +15,11 @@ if (targetApp === undefined) {
   targetErr.name = "Undefined Target".toUpperCase();
   targetErr.message = "please specify an <AppName> to start";
   throw targetErr;
-} else if (isDev) {
+} else if (isDev)
   return nodemon({
     cwd: path.resolve(rootPath, targetApp),
     ignore: ["node_modules/**"],
   });
-}
 
 const config = {},
   modes = ["none", "development", "production"],
@@ -55,7 +54,7 @@ config.optimization = {
       chunks: "all",
       cacheGroups: {
         module: {
-          test: /[\\/]node_modules(?![\\/]envase)[\\/]/,
+          test: /[\\/]node_modules(?![\\/]outvie)[\\/]/,
         },
       },
     },
@@ -64,7 +63,6 @@ config.optimization = {
 
 try {
   const compiler = webpack(config);
-  compiler.run();
   compiler.run();
 } catch {
   console.log(config);
