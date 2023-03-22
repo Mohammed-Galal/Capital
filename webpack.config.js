@@ -2,7 +2,7 @@
 
 const path = require("path"),
   rootPath = process.cwd();
-  
+
 const nodemon = require("nodemon"),
   webpack = require("webpack");
 
@@ -51,11 +51,12 @@ config.resolve = {
 config.optimization = {
   chunkIds: "named",
   splitChunks: {
-  splitChunks: {
-    chunks: "all",
-    cacheGroups: {
-      module: {
-        test: /[\\/]node_modules(?![\\/]envase)[\\/]/,
+    splitChunks: {
+      chunks: "all",
+      cacheGroups: {
+        module: {
+          test: /[\\/]node_modules(?![\\/]envase)[\\/]/,
+        },
       },
     },
   },
