@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 const path = require("path"),
-  rootPath = process.cwd(),
+  rootPath = process.cwd();
+  
+const nodemon = require("nodemon"),
   webpack = require("webpack");
 
 const args = process.argv,
@@ -14,7 +16,6 @@ if (targetApp === undefined) {
   targetErr.message = "please specify an <AppName> to start";
   throw targetErr;
 } else if (isDev) {
-  const nodemon = require("nodemon");
   return nodemon({
     cwd: path.resolve(rootPath, targetApp),
     ignore: ["node_modules/**"],
