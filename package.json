@@ -1,26 +1,26 @@
 {
-  "name": "outvie",
+  "name": "egy_mg",
   "version": "1.0.0",
   "description": "server-side framework",
   "main": "index.js",
   "bin": {
-    "outvie": "./webpack.config.js"
+    "egy_mg": "./webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mohammed-Galal/outvie.git"
+    "url": "git+https://github.com/Mohammed-Galal/egy_mg.git"
   },
   "keywords": [
-    "outvie",
+    "egy_mg",
     "server-side",
     "framework"
   ],
   "author": "Mohammed Galal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mohammed-Galal/outvie/issues"
+    "url": "https://github.com/Mohammed-Galal/egy_mg/issues"
   },
-  "homepage": "https://github.com/Mohammed-Galal/outvie#readme",
+  "homepage": "https://github.com/Mohammed-Galal/egy_mg#readme",
   "dependencies": {
     "nodemon": "^2.0.21",
     "webpack": "^5.76.2"
