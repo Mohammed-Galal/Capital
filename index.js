@@ -18,6 +18,7 @@ Object.assign(http.ServerResponse.prototype, resProto);
 
 module.exports = APP;
 const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
+  __require = require("envRequire"),
   methodsInitialized = {},
   proto = APP.prototype,
   accessControlAllowMethods = [];
@@ -67,6 +68,6 @@ Object.defineProperty(proto, "methods", {
 function initMethod(method) {
   const M = method.toUpperCase().replace(extentionExp, emptyStr);
   httpMethods.test(M) && accessControlAllowMethods.push(M);
-  methodsInitialized[M] = __non_webpack_require__(serverPath + "/" + method);
+  methodsInitialized[M] = __require(serverPath + "/" + method);
   return M;
 }
