@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const path = require("path"),
   rootPath = process.cwd();
 
@@ -31,13 +32,12 @@ config.entry = {
   index: path.resolve(rootPath, targetApp, "config.js"),
 };
 
+const filename = isDev ? "temp" : "index";
 config.output = {
-  path: path.resolve(rootPath, targetApp + isDev ? "/temp.js" : ""),
+  path: path.resolve(rootPath, targetApp),
   chunkFormat: "commonjs",
-  filename: isDev
-    ? false
-    : ({ chunk }) =>
-        (chunk.name === "index" ? "index" : "modules/[name]") + ".js",
+  filename: ({ chunk }) =>
+    (chunk.name === "index" ? filename : "modules/[name]") + ".js",
 };
 
 config.resolve = {
@@ -49,16 +49,14 @@ config.resolve = {
 
 config.optimization = {
   chunkIds: "named",
-  splitChunks: isDev
-    ? false
-    : {
-        chunks: "all",
-        cacheGroups: {
-          module: {
-            test: /[\\/]node_modules(?![\\/]xerex)[\\/]/,
-          },
-        },
+  splitChunks: {
+    chunks: "all",
+    cacheGroups: {
+      module: {
+        test: /[\\/]node_modules(?![\\/]xerex)[\\/]/,
       },
+    },
+  },
 };
 
 try {
