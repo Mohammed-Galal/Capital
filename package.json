@@ -1,26 +1,26 @@
 {
-  "name": "blend",
+  "name": "xerex",
   "version": "1.0.0",
   "description": "server-side framework",
   "main": "index.js",
   "bin": {
-    "blend": "./webpack.config.js"
+    "xerex": "./webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mohammed-Galal/blend.git"
+    "url": "git+https://github.com/Mohammed-Galal/xerex.git"
   },
   "keywords": [
-    "blend",
+    "xerex",
     "server-side",
     "framework"
   ],
   "author": "Mohammed Galal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mohammed-Galal/blend/issues"
+    "url": "https://github.com/Mohammed-Galal/xerex/issues"
   },
-  "homepage": "https://github.com/Mohammed-Galal/blend#readme",
+  "homepage": "https://github.com/Mohammed-Galal/xerex#readme",
   "dependencies": {
     "nodemon": "^2.0.21",
     "webpack": "^5.76.2"
