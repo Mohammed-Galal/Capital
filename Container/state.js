@@ -71,3 +71,5 @@ Object.defineProperties(proto, {
     },
   },
 });
+
+Object.freeze(proto);

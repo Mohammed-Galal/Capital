@@ -1,6 +1,6 @@
 const URL = require("./UniformResourceLocator"),
   { enumerable, freezeObj } = require("../constants"),
-  MapPolyfill = require("./mapPolyfill"),
+  state = require("./state"),
   router = require("./router");
 
 module.exports = CONTAINER;
@@ -8,7 +8,7 @@ module.exports = CONTAINER;
 function CONTAINER(req, res) {
   this.__proto__.req = req;
   this.__proto__.res = res;
-  this.state = new MapPolyfill();
+  this.state = new state();
   this.matchedRoutes = [];
   this.url = new URL(req.url);
   this.host = req.headers.host;

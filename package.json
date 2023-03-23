@@ -1,6 +1,6 @@
 {
   "name": "xerex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "server-side framework",
   "main": "index.js",
   "bin": {

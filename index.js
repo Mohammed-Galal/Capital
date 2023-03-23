@@ -50,9 +50,10 @@ proto.callback = function (req, res) {
 
   const CN = freezeObj(new CONTAINER(req, res));
 
-  pre !== undefined && pre(CN);
-  targetMethod !== undefined && targetMethod(CN);
-  post !== undefined && post(CN);
+  if ((pre === undefined ? true : pre(CN)) !== false) {
+    targetMethod !== undefined && targetMethod(CN);
+    post !== undefined && post(CN);
+  }
 };
 
 Object.defineProperty(proto, "methods", {

@@ -18,7 +18,7 @@ module.exports = UniformResourceLocator;
 function UniformResourceLocator(url) {
   const urlObj = parseURL(url),
     pathName = formatPath(urlObj.pathname),
-    openRoutes = (this.openRoutes = []);
+    openRoutes = (this.__proto__.openRoutes = []);
   this.hash = urlObj.hash;
   this.path = {
     name: pathName,
@@ -59,4 +59,5 @@ Object.defineProperty(UniformResourceLocator.prototype, "isFilePath", {
     return extentionExp.test(this.path.name);
   },
 });
+
 freezeObj(URL.prototype);
