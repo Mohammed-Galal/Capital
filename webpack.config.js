@@ -50,7 +50,7 @@ config.optimization = {
     chunks: "all",
     cacheGroups: {
       module: {
-        test: /[\\/]node_modules(?![\\/]egy_mg)[\\/]/,
+        test: /[\\/]node_modules(?![\\/]blend)[\\/]/,
       },
     },
   },

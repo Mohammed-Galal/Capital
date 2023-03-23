@@ -1,26 +1,26 @@
 {
-  "name": "egy_mg",
+  "name": "blend",
   "version": "1.0.0",
   "description": "server-side framework",
   "main": "index.js",
   "bin": {
-    "egy_mg": "./webpack.config.js"
+    "blend": "./webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mohammed-Galal/egy_mg.git"
+    "url": "git+https://github.com/Mohammed-Galal/blend.git"
   },
   "keywords": [
-    "egy_mg",
+    "blend",
     "server-side",
     "framework"
   ],
   "author": "Mohammed Galal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Mohammed-Galal/egy_mg/issues"
+    "url": "https://github.com/Mohammed-Galal/blend/issues"
   },
-  "homepage": "https://github.com/Mohammed-Galal/egy_mg#readme",
+  "homepage": "https://github.com/Mohammed-Galal/blend#readme",
   "dependencies": {
     "nodemon": "^2.0.21",
     "webpack": "^5.76.2"
