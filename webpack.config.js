@@ -18,7 +18,7 @@ if (targetApp === undefined) {
 } else if (isDev)
   return nodemon({
     cwd: path.resolve(rootPath, targetApp),
-    ignore: ["node_modules/**"],
+    ignore: ["node_modules/**", "config.js", "modules/**", "assets/**"],
   });
 
 const config = {},
