@@ -1,14 +1,14 @@
 const http = require("http"),
   fs = require("fs"),
-  { freezeObj, extentionExp, emptyStr, arrFrom } = require("./constants"),
-  CONTAINER = require("./Container");
+  { freezeObj, extentionExp, emptyStr, arrFrom } = require("../constants"),
+  CONTAINER = require("../Container");
 
-const appDir = __dirname,
-  serverPath = appDir + "/server",
-  ContainerProto = require("addons/container"),
+const ContainerProto = require("addons/container"),
   reqProto = require("addons/request"),
   resProto = require("addons/response");
 
+const appDir = __dirname,
+  serverPath = appDir + "/server";
 ContainerProto.appDir = appDir;
 reqProto.appDir = appDir;
 resProto.appDir = appDir;
@@ -16,15 +16,20 @@ Object.assign(CONTAINER.prototype, ContainerProto);
 Object.assign(http.IncomingMessage.prototype, reqProto);
 Object.assign(http.ServerResponse.prototype, resProto);
 
-module.exports = APP;
 const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
-  __require = require("envRequire"),
   methodsInitialized = {},
-  proto = APP.prototype,
   accessControlAllowMethods = [];
 
-fs.readdirSync(serverPath).map(initMethod);
+fs.readdirSync(serverPath).map(function (method) {
+  // initMethods: get all methods initialized in the server folder and merge it with object above [methodsInitialized]
+  const M = method.toUpperCase().replace(extentionExp, emptyStr);
+  httpMethods.test(M) && accessControlAllowMethods.push(M);
+  methodsInitialized[M] = __non_webpack_require__(serverPath + "/" + method);
+  return M;
+});
 
+module.exports = APP;
+const proto = APP.prototype;
 function APP() {
   if (this.constructor !== APP) {
     const constructorError = new Error();
@@ -63,11 +68,3 @@ Object.defineProperty(proto, "methods", {
     return arrFrom(accessControlAllowMethods);
   },
 });
-
-// initMethods: get all methods initialized in the server folder and merge it with object above [methodsInitialized]
-function initMethod(method) {
-  const M = method.toUpperCase().replace(extentionExp, emptyStr);
-  httpMethods.test(M) && accessControlAllowMethods.push(M);
-  methodsInitialized[M] = __require(serverPath + "/" + method);
-  return M;
-}

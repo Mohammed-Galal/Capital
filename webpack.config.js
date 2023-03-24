@@ -26,42 +26,53 @@ const config = {},
   modes = ["none", "development", "production"],
   targets = ["node", "web"];
 
-config.mode = modes[2];
 config.target = targets[0];
 config.entry = {
   index: path.resolve(rootPath, targetApp, "config.js"),
 };
 
-const filename = isDev ? "temp" : "index";
 config.output = {
   path: path.resolve(rootPath, targetApp),
   chunkFormat: "commonjs",
-  filename: ({ chunk }) =>
-    (chunk.name === "index" ? filename : "modules/[name]") + ".js",
 };
 
 config.resolve = {
   alias: {
-    envRequire: "./initMethodFuction/" + (isDev ? "dev" : "prod") + ".js",
     addons: path.resolve(rootPath, "addons"),
   },
 };
 
-config.optimization = {
-  chunkIds: "named",
-  splitChunks: {
-    chunks: "all",
-    cacheGroups: {
-      module: {
-        test: /[\\/]node_modules(?![\\/]xerex)[\\/]/,
+if (isDev) {
+  config.resolve.alias.xerex = path.resolve(__dirname, "scripts/dev.js");
+  config.mode = modes[1];
+  config.output.filename = "temp.js";
+} else {
+  config.mode = modes[2];
+
+  config.output.filename = ({ chunk }) =>
+    (chunk.name === "index" ? "index" : "modules/[name]") + ".js";
+
+  Object.assign(config.resolve.alias, {
+    xerex: path.resolve(__dirname, "scripts/prod.js"),
+    server: path.resolve(rootPath, targetApp, "server"),
+  });
+
+  config.optimization = {
+    chunkIds: "named",
+    splitChunks: {
+      chunks: "all",
+      cacheGroups: {
+        module: {
+          test: /[\\/]node_modules(?![\\/]xerex)[\\/]/,
+        },
       },
     },
-  },
-};
+  };
+}
 
 try {
   const compiler = webpack(config);
   compiler.run();
-} catch {
-  console.log(config);
+} catch (e) {
+  console.log(e.name, "\n\n", e.message);
 }
