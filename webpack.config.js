@@ -17,7 +17,7 @@ if (targetApp === undefined) {
   throw targetErr;
 } else if (args[2] === "serve")
   return nodemon({
-    script: "temp.js",
+    script: path.resolve(rootPath, "temp", targetApp + ".js"),
     cwd: path.resolve(rootPath, targetApp),
     ignore: ["node_modules/**", "config.js", "assets/**"],
   });
