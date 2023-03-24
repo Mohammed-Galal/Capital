@@ -3,12 +3,14 @@ const http = require("http"),
   { freezeObj, extentionExp, emptyStr, arrFrom } = require("../constants"),
   CONTAINER = require("../Container");
 
-const ContainerProto = require("addons/container"),
-  reqProto = require("addons/request"),
-  resProto = require("addons/response");
+const appDir = require("__APP_DIR__"),
+  addonsDir = require("__ADDONS__");
 
-const appDir = __dirname,
-  serverPath = appDir + "/server";
+const ContainerProto = __non_webpack_require__(addonsDir + "/container"),
+  reqProto = __non_webpack_require__(addonsDir + "/request"),
+  resProto = __non_webpack_require__(addonsDir + "/response");
+
+const serverPath = appDir + "/server";
 ContainerProto.appDir = appDir;
 reqProto.appDir = appDir;
 resProto.appDir = appDir;

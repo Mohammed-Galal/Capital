@@ -32,29 +32,54 @@ config.entry = {
 };
 
 config.output = {
-  path: path.resolve(rootPath, targetApp),
   chunkFormat: "commonjs",
 };
 
 config.resolve = {
-  alias: {
-    addons: path.resolve(rootPath, "addons"),
-  },
+  alias: {},
 };
 
 if (isDev) {
-  config.resolve.alias.xerex = path.resolve(__dirname, "scripts/dev.js");
   config.mode = modes[1];
-  config.output.filename = "temp.js";
+  config.output.path = path.resolve(rootPath, "temp");
+  config.output.filename = path.basename(targetApp) + ".js";
+  config.resolve.alias.xerex = path.resolve(__dirname, "scripts/dev.js");
+  config.externals = {
+    __APP_DIR__: JSON.stringify(path.resolve(rootPath, targetApp)),
+    __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
+  };
 } else {
-  config.mode = modes[2];
+  // ======================
+  // const methodsInitialized = {},
+  //   accessControlAllowMethods = [];
 
+  // fs.readdirSync(appDir + "/server").map(function (method) {
+  //   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
+  //   const M = method.toUpperCase().replace(extentionExp, emptyStr);
+  //   httpMethods.test(M) && accessControlAllowMethods.push(M);
+  //   methodsInitialized[M] = require("server/" + method);
+  //   return M;
+  // });
+
+  // config.plugins = [
+  //   new webpack.ProvidePlugin({
+  //     test: path.resolve(rootPath, targetApp, "server/get"),
+  //   }),
+  // ];
+
+  // console.log(config.plugins[0]);
+
+  // ======================
+
+  config.mode = modes[2];
+  config.output.path = path.resolve(rootPath, targetApp);
   config.output.filename = ({ chunk }) =>
     (chunk.name === "index" ? "index" : "modules/[name]") + ".js";
 
   Object.assign(config.resolve.alias, {
-    xerex: path.resolve(__dirname, "scripts/prod.js"),
+    addons: path.resolve(rootPath, "addons"),
     server: path.resolve(rootPath, targetApp, "server"),
+    xerex: path.resolve(__dirname, "scripts/prod.js"),
   });
 
   config.optimization = {
