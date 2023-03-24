@@ -3,8 +3,6 @@ const http = require("http"),
   { freezeObj, extentionExp, emptyStr, arrFrom } = require("../constants"),
   CONTAINER = require("../Container");
 
-console.log(test);
-
 const ContainerProto = require("addons/container"),
   reqProto = require("addons/request"),
   resProto = require("addons/response");
@@ -21,11 +19,13 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   methodsInitialized = {},
   accessControlAllowMethods = [];
 
-fs.readdirSync(appDir + "/server").map(function (method) {
+const serverHandlers = require("handlers");
+
+serverHandlers.map(function (method) {
   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
   const M = method.toUpperCase().replace(extentionExp, emptyStr);
   httpMethods.test(M) && accessControlAllowMethods.push(M);
-  methodsInitialized[M] = require("server/" + method);
+  methodsInitialized[M] = require("@SERVER:" + method);
   return M;
 });
 

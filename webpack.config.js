@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const path = require("path"),
-  rootPath = process.cwd();
-
+const rootPath = process.cwd(),
+  path = require("path"),
+  fs = require("fs");
 const nodemon = require("nodemon"),
   webpack = require("webpack");
 
@@ -49,28 +49,6 @@ if (isDev) {
     __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
   };
 } else {
-  // ======================
-  // const methodsInitialized = {},
-  //   accessControlAllowMethods = [];
-
-  // fs.readdirSync(appDir + "/server").map(function (method) {
-  //   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
-  //   const M = method.toUpperCase().replace(extentionExp, emptyStr);
-  //   httpMethods.test(M) && accessControlAllowMethods.push(M);
-  //   methodsInitialized[M] = require("server/" + method);
-  //   return M;
-  // });
-
-  // config.plugins = [
-  //   new webpack.ProvidePlugin({
-  //     test: path.resolve(rootPath, targetApp, "server/get"),
-  //   }),
-  // ];
-
-  // console.log(config.plugins[0]);
-
-  // ======================
-
   config.mode = modes[2];
   config.output.path = path.resolve(rootPath, targetApp);
   config.output.filename = ({ chunk }) =>
@@ -93,6 +71,23 @@ if (isDev) {
       },
     },
   };
+
+  // ============================================
+
+  const handlers = fs.readdirSync(path.resolve(rootPath, targetApp, "server"));
+
+  // config.externalsType = "commonjs";
+  const externals = (config.externals = {
+    handlers: JSON.stringify(handlers),
+    // get: "commonjs " + path.resolve(rootPath, targetApp, "server", "get"),
+  });
+
+  handlers.forEach((h) => {
+    externals["@SERVER:" + h] =
+      "commonjs " + path.resolve(rootPath, targetApp, "server", h);
+  });
+
+  // console.log(handlers, serverMethods);
 }
 
 try {
