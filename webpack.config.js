@@ -23,7 +23,9 @@ if (targetApp === undefined) {
   });
 
 const config = {},
-  modes = ["none", "development", "production"],
+  compiler = webpack(config);
+
+const modes = ["none", "development", "production"],
   targets = ["node", "web"];
 
 config.target = targets[0];
@@ -31,7 +33,6 @@ config.target = targets[0];
 const entriesMap = {},
   entries = (config.entry = {
     index: path.resolve(rootPath, targetApp, "config.js"),
-    GET: path.resolve(rootPath, targetApp, "server", "get"),
   });
 
 config.output = {
@@ -85,14 +86,11 @@ if (isDev) {
   externals.handlers = JSON.stringify(handlers);
 }
 
-try {
-  const compiler = webpack(config);
-  compiler.run(() => compiler.close(callback));
-
-  function callback() {
-    const mapPath = path.resolve(rootPath, targetApp, "handlersMap.js");
-    fs.writeFileSync(mapPath, "module.exports = " + JSON.stringify(entriesMap));
-  }
-} catch (e) {
-  console.log(e.name, "\n\n", e.message);
+compiler.run(callback);
+function callback(err, stats) {
+  if (err) console.log(err.name, "\n\n", err.message);
+  const mapPath = path.resolve(rootPath, targetApp, "serverMap.js");
+  fs.writeFileSync(mapPath, "module.exports = " + JSON.stringify(entriesMap));
+  // ==============
+  compiler.close(() => {});
 }
