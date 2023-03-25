@@ -4,7 +4,8 @@ const http = require("http"),
   CONTAINER = require("../Container");
 
 const appDir = require("__APP_DIR__"),
-  addonsDir = require("__ADDONS__");
+  addonsDir = require("__ADDONS__"),
+  handlers = require("__HANDLERS__");
 
 const ContainerProto = __non_webpack_require__(addonsDir + "/container"),
   reqProto = __non_webpack_require__(addonsDir + "/request"),
@@ -22,7 +23,7 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   methodsInitialized = {},
   accessControlAllowMethods = [];
 
-fs.readdirSync(serverPath).map(function (method) {
+handlers.map(function (method) {
   // initMethods: get all methods initialized in the server folder and merge it with object above [methodsInitialized]
   const M = method.toUpperCase().replace(extentionExp, emptyStr);
   httpMethods.test(M) && accessControlAllowMethods.push(M);

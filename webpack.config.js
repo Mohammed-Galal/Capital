@@ -22,8 +22,7 @@ if (targetApp === undefined) {
     ignore: ["node_modules/**", "config.js", "assets/**"],
   });
 
-const config = {},
-  compiler = webpack(config);
+const config = {};
 
 const modes = ["none", "development", "production"],
   targets = ["node", "web"];
@@ -44,10 +43,12 @@ config.resolve = {
   alias: {},
 };
 
-const externals = (config.externals = {
+const handlers = fs.readdirSync(path.resolve(rootPath, targetApp, "server"));
+config.externals = {
   __APP_DIR__: JSON.stringify(path.resolve(rootPath, targetApp)),
   __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
-});
+  __HANDLERS__: JSON.stringify(handlers),
+};
 
 if (isDev) {
   config.mode = modes[1];
@@ -80,17 +81,23 @@ if (isDev) {
       },
     },
   };
-
-  // ============================================
-  const handlers = fs.readdirSync(path.resolve(rootPath, targetApp, "server"));
-  externals.handlers = JSON.stringify(handlers);
 }
 
-compiler.run(callback);
-function callback(err, stats) {
+const compiler = webpack(config);
+
+// Specify the event hook to attach to
+compiler.hooks.emit.tap("_", (compilation) => {
+  console.log(compilation.addModule);
+
+  // Manipulate the build using the plugin API provided by webpack
+  const hooksPath = path.resolve(rootPath, targetApp, "server", "get");
+  // compilation.addModule(hooksPath);
+});
+
+compiler.run((err, stats) => {
   if (err) console.log(err.name, "\n\n", err.message);
   const mapPath = path.resolve(rootPath, targetApp, "serverMap.js");
   fs.writeFileSync(mapPath, "module.exports = " + JSON.stringify(entriesMap));
   // ==============
   compiler.close(() => {});
-}
+});

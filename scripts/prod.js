@@ -7,7 +7,9 @@ const ContainerProto = require("addons/container"),
   reqProto = require("addons/request"),
   resProto = require("addons/response");
 
-const appDir = require("__APP_DIR__");
+const appDir = require("__APP_DIR__"),
+  serverHandlers = require("__HANDLERS__");
+
 ContainerProto.appDir = appDir;
 reqProto.appDir = appDir;
 resProto.appDir = appDir;
@@ -19,7 +21,6 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   methodsInitialized = {},
   accessControlAllowMethods = [];
 
-const serverHandlers = require("handlers");
 // serverHandlers.map(function (method) {
 //   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
 //   const M = method.toUpperCase().replace(extentionExp, emptyStr);
