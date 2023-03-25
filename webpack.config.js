@@ -27,32 +27,40 @@ const config = {},
   targets = ["node", "web"];
 
 config.target = targets[0];
-config.entry = {
-  index: path.resolve(rootPath, targetApp, "config.js"),
-};
+
+const entriesMap = {},
+  entries = (config.entry = {
+    index: path.resolve(rootPath, targetApp, "config.js"),
+    GET: path.resolve(rootPath, targetApp, "server", "get"),
+  });
 
 config.output = {
   chunkFormat: "commonjs",
 };
 
 config.resolve = {
+  extensions: [".js", ".jsx"],
   alias: {},
 };
+
+const externals = (config.externals = {
+  __APP_DIR__: JSON.stringify(path.resolve(rootPath, targetApp)),
+  __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
+});
 
 if (isDev) {
   config.mode = modes[1];
   config.output.path = path.resolve(rootPath, "temp");
   config.output.filename = path.basename(targetApp) + ".js";
   config.resolve.alias.xerex = path.resolve(__dirname, "scripts/dev.js");
-  config.externals = {
-    __APP_DIR__: JSON.stringify(path.resolve(rootPath, targetApp)),
-    __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
-  };
 } else {
   config.mode = modes[2];
   config.output.path = path.resolve(rootPath, targetApp);
-  config.output.filename = ({ chunk }) =>
-    (chunk.name === "index" ? "index" : "modules/[name]") + ".js";
+  config.output.filename = (stats) => {
+    const { chunk } = stats;
+    if (entries[chunk.name]) entriesMap[chunk.name] = chunk.id;
+    return (chunk.name === "index" ? "index" : "modules/[name]") + ".js";
+  };
 
   Object.assign(config.resolve.alias, {
     addons: path.resolve(rootPath, "addons"),
@@ -73,26 +81,18 @@ if (isDev) {
   };
 
   // ============================================
-
   const handlers = fs.readdirSync(path.resolve(rootPath, targetApp, "server"));
-
-  // config.externalsType = "commonjs";
-  const externals = (config.externals = {
-    handlers: JSON.stringify(handlers),
-    // get: "commonjs " + path.resolve(rootPath, targetApp, "server", "get"),
-  });
-
-  handlers.forEach((h) => {
-    externals["@SERVER:" + h] =
-      "commonjs " + path.resolve(rootPath, targetApp, "server", h);
-  });
-
-  // console.log(handlers, serverMethods);
+  externals.handlers = JSON.stringify(handlers);
 }
 
 try {
   const compiler = webpack(config);
-  compiler.run();
+  compiler.run(() => compiler.close(callback));
+
+  function callback() {
+    const mapPath = path.resolve(rootPath, targetApp, "handlersMap.js");
+    fs.writeFileSync(mapPath, "module.exports = " + JSON.stringify(entriesMap));
+  }
 } catch (e) {
   console.log(e.name, "\n\n", e.message);
 }
