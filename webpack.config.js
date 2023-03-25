@@ -3,11 +3,12 @@
 const rootPath = process.cwd(),
   path = require("path"),
   fs = require("fs");
+
 const nodemon = require("nodemon"),
   webpack = require("webpack");
 
 const args = process.argv,
-  isDev = args[2] === "development",
+  isDev = /dev/i.test(args[2]),
   targetApp = args[3] || (isDev ? undefined : args[2]);
 
 if (targetApp === undefined) {
@@ -15,16 +16,15 @@ if (targetApp === undefined) {
   targetErr.name = "Undefined Target".toUpperCase();
   targetErr.message = "please provide <AppName> to start";
   throw targetErr;
-} else if (args[2] === "serve")
+} else if (/serve/i.test(args[2]))
   return nodemon({
     script: path.resolve(rootPath, "temp", targetApp + ".js"),
     cwd: path.resolve(rootPath, targetApp),
     ignore: ["node_modules/**", "config.js", "assets/**"],
   });
 
-const config = {};
-
-const modes = ["none", "development", "production"],
+const config = {},
+  modes = ["none", "development", "production"],
   targets = ["node", "web"];
 
 config.target = targets[0];
