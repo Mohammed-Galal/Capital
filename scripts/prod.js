@@ -9,7 +9,7 @@ const ContainerProto = require("addons/container"),
 
 const appDir = require("__APP_DIR__"),
   appName = require("__APP_NAME__"),
-  serverHandlers = require("__HANDLERS__").map((h) => "server/" + h);
+  serverHandlers = require("__HANDLERS__");
 
 ContainerProto.appDir = appDir;
 reqProto.appDir = appDir;
@@ -23,13 +23,17 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   accessControlAllowMethods = [];
 
 const test = __webpack_modules__;
-console.log(
-  appName + "\\" + path.relative(appDir, "./app/server/get/index.js")
-);
+
+serverHandlers.forEach((h) => {
+  const pathExp = appName + "\\" + path.relative(appDir, h);
+  console.log(pathExp.replace(/\\/g, "[\\/]"));
+});
+
+console.log(test);
 
 // serverHandlers.map(function (method) {
 //   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
-//   const M = method.toUpperCase().replace(extentionExp, emptyStr);
+//   const M = method.replace(extentionExp, emptyStr).toUpperCase();
 //   httpMethods.test(M) && accessControlAllowMethods.push(M);
 //   methodsInitialized[M] = createRequire(appDir + "\\" + method);
 //   return M;
