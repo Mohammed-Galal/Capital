@@ -1,5 +1,5 @@
 const http = require("http"),
-  fs = require("fs"),
+  path = require("path"),
   { freezeObj, extentionExp, emptyStr, arrFrom } = require("../constants"),
   CONTAINER = require("../Container");
 
@@ -8,6 +8,7 @@ const ContainerProto = require("addons/container"),
   resProto = require("addons/response");
 
 const appDir = require("__APP_DIR__"),
+  appName = require("__APP_NAME__"),
   serverHandlers = require("__HANDLERS__").map((h) => "server/" + h);
 
 ContainerProto.appDir = appDir;
@@ -22,23 +23,9 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   accessControlAllowMethods = [];
 
 const test = __webpack_modules__;
-
-console.log(test);
-
-// require.ensure(
-//   dependencies: String[],
-//   callback: function(require),
-//   errorCallback: function(error),
-//   chunkName: String
-// )
-
-// test.then((t) => console.log(t));
-
-// const serverMap = __non_webpack_require__("./serverMap.js");
-
-// serverHandlers.forEach((h) => {
-//   console.log(__webpack_modules__["" + serverMap[h]]);
-// });
+console.log(
+  appName + "\\" + path.relative(appDir, "./app/server/get/index.js")
+);
 
 // serverHandlers.map(function (method) {
 //   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]

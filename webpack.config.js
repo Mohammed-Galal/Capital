@@ -35,11 +35,9 @@ const handlers = fs
   .readdirSync(appServerPath)
   .map((h) => path.resolve(appServerPath, h));
 
-config.entry = handlers.concat(path.resolve(appPath, "config.js"));
-
-console.log(config.entry);
-
-return;
+config.entry = {
+  index: handlers.concat(path.resolve(appPath, "config.js")),
+};
 
 config.output = {
   chunkFormat: "commonjs",
@@ -51,6 +49,7 @@ config.resolve = {
 };
 
 config.externals = {
+  __APP_NAME__: JSON.stringify(targetApp),
   __APP_DIR__: JSON.stringify(appPath),
   __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
   __HANDLERS__: JSON.stringify(handlers),
@@ -64,7 +63,8 @@ if (isDev) {
 } else {
   config.mode = modes[2];
   config.output.path = appPath;
-  config.output.filename = "index.js";
+  config.output.filename = ({ chunk }) =>
+    (chunk.name === "index" ? "index" : "modules/[name]") + ".js";
 
   Object.assign(config.resolve.alias, {
     addons: path.resolve(rootPath, "addons"),
@@ -74,19 +74,18 @@ if (isDev) {
 
   config.optimization = {
     moduleIds: "named",
+    splitChunks: {
+      chunks: "all",
+      cacheGroups: {
+        module: {
+          test: /[\\/]node_modules(?![\\/]xerex)[\\/]/,
+        },
+      },
+    },
   };
 }
 
 const compiler = webpack(config);
-
-// // Specify the event hook to attach to
-// compiler.hooks.emit.tap("_", (compilation) => {
-//   console.log(compilation.addModule);
-
-//   // Manipulate the build using the plugin API provided by webpack
-//   const hooksPath = path.resolve(rootPath, targetApp, "server", "get");
-//   // compilation.addModule(hooksPath);
-// });
 
 compiler.run((err, stats) => {
   if (err) console.log(err.name, "\n\n", err.message);
