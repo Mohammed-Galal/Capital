@@ -9,7 +9,8 @@ const nodemon = require("nodemon"),
 
 const args = process.argv,
   isDev = /dev/i.test(args[2]),
-  targetApp = args[3] || (isDev ? undefined : args[2]);
+  targetApp = args[3] || (isDev ? undefined : args[2]),
+  appPath = path.resolve(rootPath, targetApp);
 
 if (targetApp === undefined) {
   const targetErr = new Error();
@@ -19,7 +20,7 @@ if (targetApp === undefined) {
 } else if (/serve/i.test(args[2]))
   return nodemon({
     script: path.resolve(rootPath, "temp", targetApp + ".js"),
-    cwd: path.resolve(rootPath, targetApp),
+    cwd: appPath,
     ignore: ["node_modules/**", "config.js", "assets/**"],
   });
 
@@ -29,10 +30,15 @@ const config = {},
 
 config.target = targets[0];
 
-const entriesMap = {},
-  entries = (config.entry = {
-    index: path.resolve(rootPath, targetApp, "config.js"),
-  });
+config.entry = [path.resolve(rootPath, targetApp, "config.js")];
+const getPath = path.resolve(rootPath, targetApp, "server/get");
+
+config.entry.push(getPath);
+
+const t = path.relative(__dirname, getPath);
+console.log(t, "\n", "./app/server/get/index.js");
+
+return;
 
 config.output = {
   chunkFormat: "commonjs",
@@ -45,7 +51,7 @@ config.resolve = {
 
 const handlers = fs.readdirSync(path.resolve(rootPath, targetApp, "server"));
 config.externals = {
-  __APP_DIR__: JSON.stringify(path.resolve(rootPath, targetApp)),
+  __APP_DIR__: JSON.stringify(appPath),
   __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
   __HANDLERS__: JSON.stringify(handlers),
 };
@@ -57,12 +63,8 @@ if (isDev) {
   config.resolve.alias.xerex = path.resolve(__dirname, "scripts/dev.js");
 } else {
   config.mode = modes[2];
-  config.output.path = path.resolve(rootPath, targetApp);
-  config.output.filename = (stats) => {
-    const { chunk } = stats;
-    if (entries[chunk.name]) entriesMap[chunk.name] = chunk.id;
-    return (chunk.name === "index" ? "index" : "modules/[name]") + ".js";
-  };
+  config.output.path = appPath;
+  config.output.filename = "index.js";
 
   Object.assign(config.resolve.alias, {
     addons: path.resolve(rootPath, "addons"),
@@ -71,33 +73,22 @@ if (isDev) {
   });
 
   config.optimization = {
-    chunkIds: "named",
-    splitChunks: {
-      chunks: "all",
-      cacheGroups: {
-        module: {
-          test: /[\\/]node_modules(?![\\/]xerex)[\\/]/,
-        },
-      },
-    },
+    moduleIds: "named",
   };
 }
 
 const compiler = webpack(config);
 
-// Specify the event hook to attach to
-compiler.hooks.emit.tap("_", (compilation) => {
-  console.log(compilation.addModule);
+// // Specify the event hook to attach to
+// compiler.hooks.emit.tap("_", (compilation) => {
+//   console.log(compilation.addModule);
 
-  // Manipulate the build using the plugin API provided by webpack
-  const hooksPath = path.resolve(rootPath, targetApp, "server", "get");
-  // compilation.addModule(hooksPath);
-});
+//   // Manipulate the build using the plugin API provided by webpack
+//   const hooksPath = path.resolve(rootPath, targetApp, "server", "get");
+//   // compilation.addModule(hooksPath);
+// });
 
 compiler.run((err, stats) => {
   if (err) console.log(err.name, "\n\n", err.message);
-  const mapPath = path.resolve(rootPath, targetApp, "serverMap.js");
-  fs.writeFileSync(mapPath, "module.exports = " + JSON.stringify(entriesMap));
-  // ==============
   compiler.close(() => {});
 });

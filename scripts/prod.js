@@ -8,7 +8,7 @@ const ContainerProto = require("addons/container"),
   resProto = require("addons/response");
 
 const appDir = require("__APP_DIR__"),
-  serverHandlers = require("__HANDLERS__");
+  serverHandlers = require("__HANDLERS__").map((h) => "server/" + h);
 
 ContainerProto.appDir = appDir;
 reqProto.appDir = appDir;
@@ -20,6 +20,25 @@ Object.assign(http.ServerResponse.prototype, resProto);
 const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   methodsInitialized = {},
   accessControlAllowMethods = [];
+
+const test = __webpack_modules__;
+
+console.log(test);
+
+// require.ensure(
+//   dependencies: String[],
+//   callback: function(require),
+//   errorCallback: function(error),
+//   chunkName: String
+// )
+
+// test.then((t) => console.log(t));
+
+// const serverMap = __non_webpack_require__("./serverMap.js");
+
+// serverHandlers.forEach((h) => {
+//   console.log(__webpack_modules__["" + serverMap[h]]);
+// });
 
 // serverHandlers.map(function (method) {
 //   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
