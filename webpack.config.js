@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 
 const rootPath = process.cwd(),
+  args = process.argv,
   path = require("path"),
   fs = require("fs");
 
 const nodemon = require("nodemon"),
   webpack = require("webpack");
 
-const args = process.argv,
-  isDev = /dev/i.test(args[2]),
+const isDev = /dev/i.test(args[2]),
   targetApp = args[3] || (isDev ? undefined : args[2]),
-  appPath = path.resolve(rootPath, targetApp);
+  appPath = path.resolve(rootPath, targetApp),
+  appServerPath = path.resolve(appPath, "server");
 
 if (targetApp === undefined) {
   const targetErr = new Error();
@@ -30,13 +31,13 @@ const config = {},
 
 config.target = targets[0];
 
-config.entry = [path.resolve(rootPath, targetApp, "config.js")];
-const getPath = path.resolve(rootPath, targetApp, "server/get");
+const handlers = fs
+  .readdirSync(appServerPath)
+  .map((h) => path.resolve(appServerPath, h));
 
-config.entry.push(getPath);
+config.entry = handlers.concat(path.resolve(appPath, "config.js"));
 
-const t = path.relative(__dirname, getPath);
-console.log(t, "\n", "./app/server/get/index.js");
+console.log(config.entry);
 
 return;
 
@@ -49,7 +50,6 @@ config.resolve = {
   alias: {},
 };
 
-const handlers = fs.readdirSync(path.resolve(rootPath, targetApp, "server"));
 config.externals = {
   __APP_DIR__: JSON.stringify(appPath),
   __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
