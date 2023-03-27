@@ -52,7 +52,9 @@ config.externals = {
   __APP_NAME__: JSON.stringify(targetApp),
   __APP_DIR__: JSON.stringify(appPath),
   __ADDONS__: JSON.stringify(path.resolve(rootPath, "addons")),
-  __HANDLERS__: JSON.stringify(handlers),
+  __HANDLERS__: JSON.stringify(
+    handlers.map((h) => path.relative(appServerPath, h))
+  ),
 };
 
 if (isDev) {
@@ -62,6 +64,7 @@ if (isDev) {
   config.resolve.alias.xerex = path.resolve(__dirname, "scripts/dev.js");
 } else {
   config.mode = modes[2];
+
   config.output.path = appPath;
   config.output.filename = ({ chunk }) =>
     (chunk.name === "index" ? "index" : "modules/[name]") + ".js";

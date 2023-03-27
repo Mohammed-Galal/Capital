@@ -22,22 +22,21 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   methodsInitialized = {},
   accessControlAllowMethods = [];
 
-const test = __webpack_modules__;
+const handlersRegex = new RegExp(
+  appName + "[\\/]server[\\/](" + serverHandlers.join("|") + ")"
+);
 
-serverHandlers.forEach((h) => {
-  const pathExp = appName + "\\" + path.relative(appDir, h);
-  console.log(pathExp.replace(/\\/g, "[\\/]"));
+const modules = __webpack_modules__;
+Object.keys(modules).forEach(function (chunkName) {
+  // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
+  const address = handlersRegex.exec(chunkName);
+  if (address === null) return;
+  const M = address[1].replace(extentionExp, emptyStr).toUpperCase();
+  httpMethods.test(M) && accessControlAllowMethods.push(M);
+  methodsInitialized[M] = modules[chunkName];
 });
 
-console.log(test);
-
-// serverHandlers.map(function (method) {
-//   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
-//   const M = method.replace(extentionExp, emptyStr).toUpperCase();
-//   httpMethods.test(M) && accessControlAllowMethods.push(M);
-//   methodsInitialized[M] = createRequire(appDir + "\\" + method);
-//   return M;
-// });
+console.log(methodsInitialized, accessControlAllowMethods);
 
 module.exports = APP;
 const proto = APP.prototype;
@@ -49,6 +48,8 @@ function APP() {
     throw constructorError;
   }
 }
+
+proto.name = appName;
 
 proto.listen = function () {
   const server = http.createServer(this.callback);
