@@ -9,7 +9,7 @@ const ContainerProto = require("addons/container"),
 
 const appDir = require("__APP_DIR__"),
   appName = require("__APP_NAME__"),
-  serverHandlers = require("__HANDLERS__");
+  serverHandlers = require("__HANDLERS__").join("|");
 
 ContainerProto.appDir = appDir;
 reqProto.appDir = appDir;
@@ -23,7 +23,7 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   accessControlAllowMethods = [];
 
 const handlersRegex = new RegExp(
-  appName + "[\\/]server[\\/](" + serverHandlers.join("|") + ")"
+  appName + "[\\/]server[\\/](" + serverHandlers + ")"
 );
 
 const modules = __webpack_modules__;
@@ -35,8 +35,6 @@ Object.keys(modules).forEach(function (chunkName) {
   httpMethods.test(M) && accessControlAllowMethods.push(M);
   methodsInitialized[M] = modules[chunkName];
 });
-
-console.log(methodsInitialized, accessControlAllowMethods);
 
 module.exports = APP;
 const proto = APP.prototype;
