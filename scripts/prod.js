@@ -26,15 +26,17 @@ const handlersRegex = new RegExp(
   appName + "[\\/]server[\\/](" + serverHandlers + ")"
 );
 
-const modules = __webpack_modules__;
+const modules = require.cache;
 Object.keys(modules).forEach(function (chunkName) {
   // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
   const address = handlersRegex.exec(chunkName);
   if (address === null) return;
   const M = address[1].replace(extentionExp, emptyStr).toUpperCase();
   httpMethods.test(M) && accessControlAllowMethods.push(M);
-  methodsInitialized[M] = modules[chunkName];
+  methodsInitialized[M] = modules[chunkName].exports;
 });
+
+// console.log(require.cache["./app/server/get/index.js"].exports.toString());
 
 module.exports = APP;
 const proto = APP.prototype;
@@ -66,7 +68,7 @@ proto.callback = function (req, res) {
 
   const CN = freezeObj(new CONTAINER(req, res));
 
-  if ((pre === undefined ? true : pre(CN)) !== false) {
+  if (pre === undefined ? true : pre(CN) !== false) {
     targetMethod !== undefined && targetMethod(CN);
     post !== undefined && post(CN);
   }
