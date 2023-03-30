@@ -1,5 +1,4 @@
 const http = require("http"),
-  fs = require("fs"),
   { freezeObj, extentionExp, emptyStr, arrFrom } = require("../constants"),
   CONTAINER = require("../Container");
 
@@ -24,7 +23,7 @@ const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
   accessControlAllowMethods = [];
 
 handlers.map(function (method) {
-  // initMethods: get all methods initialized in the server folder and merge it with object above [methodsInitialized]
+  // get all methods initialized in the server folder and merge it with object above [methodsInitialized]
   const M = method.toUpperCase().replace(extentionExp, emptyStr);
   httpMethods.test(M) && accessControlAllowMethods.push(M);
   methodsInitialized[M] = __non_webpack_require__(serverPath + "/" + method);

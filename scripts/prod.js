@@ -1,5 +1,4 @@
 const http = require("http"),
-  path = require("path"),
   { freezeObj, extentionExp, emptyStr, arrFrom } = require("../constants"),
   CONTAINER = require("../Container");
 
@@ -18,13 +17,12 @@ Object.assign(CONTAINER.prototype, ContainerProto);
 Object.assign(http.IncomingMessage.prototype, reqProto);
 Object.assign(http.ServerResponse.prototype, resProto);
 
-const httpMethods = new RegExp("(" + http.METHODS.join("|") + ")"),
-  methodsInitialized = {},
-  accessControlAllowMethods = [];
-
 const handlersRegex = new RegExp(
-  appName + "[\\/]server[\\/](" + serverHandlers + ")"
-);
+    appName + "[\\/]server[\\/](" + serverHandlers + ")"
+  ),
+  methodsInitialized = {},
+  accessControlAllowMethods = [],
+  httpMethods = new RegExp("(" + http.METHODS.join("|") + ")");
 
 const modules = require.cache;
 Object.keys(modules).forEach(function (chunkName) {
@@ -35,8 +33,6 @@ Object.keys(modules).forEach(function (chunkName) {
   httpMethods.test(M) && accessControlAllowMethods.push(M);
   methodsInitialized[M] = modules[chunkName].exports;
 });
-
-// console.log(require.cache["./app/server/get/index.js"].exports.toString());
 
 module.exports = APP;
 const proto = APP.prototype;
